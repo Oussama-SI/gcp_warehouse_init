@@ -29,9 +29,9 @@ LEFT JOIN `data-to-insights.ecommerce.products` AS inventory
 ON website.productSKU = inventory.SKU
 WHERE inventory.SKU IS NULL
 
-#standardSQL
-# reverse the join
-# find records in website but not in inventory
+-- standardSQL
+-- reverse the join
+-- find records in website but not in inventory
 SELECT DISTINCT
 website.productSKU AS website_SKU,
 inventory.SKU AS inventory_SKU

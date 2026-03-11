@@ -45,4 +45,46 @@ SELECT *
 FROM `covid.INFORMATION_SCHEMA.TABLES`;
 
 
+SELECT 
+    name,
+    SUM(ps.product_qty) FILTER (WHERE type = 'product') AS products_number,
+    STRING_AGG(c.name, ', ') AS categories,
+    EXTRACT(DAY FROM ps.date) AS last_modified,
+    COALESCE(DATE_DIFF(CURRENT_DATE(), ps.create_date, DAY), 0) AS product_age,
+    RANK() OVER (ORDER BY MAX(ps.sold_price) DESC) AS classement
+FROM (
+    SELECT * EXCEPT(weight, price, color_ids, missions, warehouse_id)
+    FROM orduct_set.product_stock
+) AS ps
+LEFT JOIN staging.product_category c 
+    ON ps.categ_id = c.id
+WHERE active = TRUE
+GROUP BY 
+    name,
+    ps.date,
+    ps.create_date,
+    ps.sold_price
+ORDER BY products_number ASC;
+
+
+WITH ps AS (
+  SELECT * EXCEPT(weight, price, color_ids, missions, warehouse_id)
+  FROM product_set.product_stock
+)
+
+SELECT 
+    name,
+    SUM(IF(type = 'product', ps.product_qty, 0)) AS products_number,
+    STRING_AGG(c.name, ', ') AS categories,
+    MAX(ps.date) AS last_modified,
+    COALESCE(DATE_DIFF(CURRENT_DATE(), ps.create_date, DAY), 0) AS product_age,
+    RANK() OVER (ORDER BY MAX(ps.sold_price) DESC) AS classement
+FROM ps
+LEFT JOIN staging.product_category c 
+    ON ps.categ_id = c.id
+WHERE active = TRUE
+GROUP BY 
+    name,
+    ps.create_date
+ORDER BY products_number ASC;
 
