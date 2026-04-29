@@ -1,1 +1,7 @@
-*.env
+# *.env
+*.pdf
+*.log
+*.zip
+
+ssh_key
+devsecops-app
