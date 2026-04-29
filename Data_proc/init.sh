@@ -33,4 +33,4 @@ bq --location=us-central1 mk --dataset qwiklabs-gcp-03-edef090fb17b:taxi_trips |
      --use_legacy_sql=false \
      'SELECT * FROM `loadavro.campaigns`;'
 
-
+gsutil rm gs://qwiklabs-gcp-03-edef090fb17b/campaigns.avro
